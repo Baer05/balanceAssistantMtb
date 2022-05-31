@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
             ViewModelProvider(
                 this,
                 ViewModelProvider.NewInstanceFactory()
-            ).get(HomeViewModel::class.java)
+            )[HomeViewModel::class.java]
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
