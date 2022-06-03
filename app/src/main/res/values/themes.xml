@@ -1,10 +1,176 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+
     <!-- Base application theme. -->
-    <style name="Theme.BalanceAssistantMtb" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- COLORS -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
+        <item name="colorError">@color/onError</item>
+        <item name="android:colorBackground">@color/background</item>
+
+
+        <!-- TYPOGRAPHY -->
+        <item name="fontFamily">@font/roboto_light</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="textAppearanceBody1">@style/RegularText</item>
+
+        <!-- WIDGETS -->
+        <item name="materialButtonStyle">@style/Widget.App.AppButton</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialog</item>
+
     </style>
+
+    <style name="MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorSecondary">@color/primaryColor</item>
+        <item name="colorSurface">@color/background</item>
+        <item name="colorOnSurface">@color/onBackground</item>
+    </style>
+
+    <!-- BUTTON -->
+    <style name="Widget.App.AppButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="iconTint">?attr/colorOnPrimary</item>
+        <item name="android:padding">@dimen/buttonPadding</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:layout_marginLeft">@dimen/margin_large</item>
+        <item name="android:layout_marginRight">@dimen/margin_large</item>
+    </style>
+
+    <style name="Widget.App.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:padding">@dimen/buttonPadding</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.Button</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:layout_marginLeft">@dimen/margin_large</item>
+        <item name="android:layout_marginRight">@dimen/margin_large</item>
+    </style>
+
+
+    <!-- TEXTFIELD -->
+
+    <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+        <item name="colorPrimary">?attr/colorPrimary</item>
+        <item name="colorOnSurface">?attr/colorOnPrimary</item>
+        <item name="colorError">?attr/colorError</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.App.Subtitle1</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.App.Caption</item>-->
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginLeft">@dimen/margin_large</item>
+        <item name="android:layout_marginRight">@dimen/margin_large</item>
+    </style>
+
+    <!-- DATEPICKER -->
+
+    <!-- define your dialog theme -->
+    <style name="DialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
+        <item name="android:buttonBarButtonStyle">@style/Widget.App.AppButton</item>
+        <item name="android:textColorHint">@color/primaryColor</item>
+
+    </style>
+
+    <!-- APPERANCE-->
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/ubuntu_light</item>
+        <item name="android:fontFamily">@font/ubuntu_light</item>
+    </style>
+
+    <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/ubuntu_light</item>
+        <item name="android:fontFamily">@font/ubuntu_light</item>
+    </style>
+
+    <style name="TextAppearance.App.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/ubuntu_light</item>
+        <item name="android:fontFamily">@font/ubuntu_light</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+
+    <!-- TEXTAPPEARANCE -->
+
+    <style name="RegularText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">@dimen/text_small</item>
+
+    </style>
+
+    <style name="RegularText2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">@dimen/text_medium</item>
+
+    </style>
+    <style name="RegularText3" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+    <style name="Headline1c" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+    <style name="Headline1b" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+    <style name="Headline1d" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textSize">@dimen/text_large</item>
+    </style>
+
+    <style name="Headline2" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/ubuntu</item>
+    </style>
+
+    <style name="Headline3" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/ubuntu</item>
+    </style>
+
+    <style name="Headline4" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">@font/ubuntu</item>
+    </style>
+
+
+    <!-- NO ACTION BAR -->
+
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

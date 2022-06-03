@@ -2,5 +2,13 @@
     <string name="app_name">balanceAssistantMtb</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="exit">Exit balanceAssistantMtb</string>
+    <string name="exit_message">Are you sure to close balanceAssistantMtb?</string>
+    <string name="yes">Yes</string>
+    <string name="no">Abort</string>
+    <string name="AppLogo">AppLogo</string>
+    <string name="start">Start</string>
+    <string name="start_tracking">Aufnahme starten</string>
+    <string name="end_tracking">Aufnahme beenden</string>
+    <string name="no_data_available">Es sind noch keine Aufnahmen vorhanden. Starte eine um Daten anschauen zu können.</string>
 </resources>
