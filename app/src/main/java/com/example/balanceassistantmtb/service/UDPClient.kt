@@ -28,7 +28,7 @@ class UdpClient(private val handler: Handler) {
         if (socket != null) return
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
-            socket = DatagramSocket(2390, InetAddress.getByName("0.0.0.0"))
+            socket = DatagramSocket(59379, InetAddress.getByName("0.0.0.0")) /*InetAddress.getByName("0.0.0.0")*/
             if (receivePacket == null)
                 receivePacket = DatagramPacket(receiveByte, bufferLength)
             startSocketThread()
@@ -52,7 +52,6 @@ class UdpClient(private val handler: Handler) {
             Log.d(tag, "listening to receive message...")
             try {
                 socket?.receive(receivePacket)
-
                 if (receivePacket == null || receivePacket?.length == 0)
                     continue
 
