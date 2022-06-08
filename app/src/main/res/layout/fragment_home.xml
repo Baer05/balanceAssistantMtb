@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Main.HomeFragment">
+    tools:context=".ui.main.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             android:layout_marginBottom="@dimen/margin_medium"
             android:alpha="1"
             android:contentDescription="@string/AppLogo"
-            android:src="@drawable/logo_inside_gradient_foreground"
+            android:src="@drawable/ic_logo"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             />

@@ -5,13 +5,8 @@ import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.balanceassistantmtb.databinding.ActivityMainBinding
-import com.example.balanceassistantmtb.ui.Main.DashboardFragment
-import com.example.balanceassistantmtb.ui.Main.HomeFragment
+import com.example.balanceassistantmtb.ui.main.DashboardFragment
+import com.example.balanceassistantmtb.ui.main.HomeFragment
 
 class HomeActivity : AppCompatActivity() {
 
@@ -37,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, dashboardFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                bottomNavigation.menu.findItem(R.id.dashboard).setChecked(true)
+                bottomNavigation.menu.findItem(R.id.dashboard).isChecked =true
             }
             else -> {
                 homeFragment = HomeFragment()
@@ -47,7 +42,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, homeFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                bottomNavigation.menu.findItem(R.id.home).setChecked(true)
+                bottomNavigation.menu.findItem(R.id.home).isChecked = true
 
             }
         }

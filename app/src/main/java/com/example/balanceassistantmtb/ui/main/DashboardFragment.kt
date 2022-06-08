@@ -1,4 +1,4 @@
-package com.example.balanceassistantmtb.ui.Main
+package com.example.balanceassistantmtb.ui.main
 
 import android.content.Context
 import android.os.Bundle
