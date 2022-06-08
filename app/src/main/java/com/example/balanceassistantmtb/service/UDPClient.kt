@@ -39,10 +39,10 @@ class UdpClient(private val handler: Handler) {
     }
 
     private fun startSocketThread() {
-        clientThread = Thread(Runnable {
+        clientThread = Thread {
             Log.d(tag, "clientThread is running...")
             receiveMessage()
-        })
+        }
         isThreadRunning = true
         clientThread.start()
     }

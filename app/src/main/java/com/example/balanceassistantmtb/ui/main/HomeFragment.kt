@@ -45,18 +45,18 @@ class HomeFragment : Fragment() {
             isTrackingActive.value = true
             udpSocket?.startUDPSocket()
         }
-        view.findViewById<Button>(R.id.end_tracking_btn).isVisible = false;
+        view.findViewById<Button>(R.id.end_tracking_btn).isVisible = false
         view.findViewById<Button>(R.id.end_tracking_btn).setOnClickListener {
             isTrackingActive.value = false
             udpSocket?.stopUDPSocket()
         }
         isTrackingActive.observe(viewLifecycleOwner) {
             if (isTrackingActive.value == true) {
-                view.findViewById<Button>(R.id.start_tracking_btn).isVisible = false;
-                view.findViewById<Button>(R.id.end_tracking_btn).isVisible = true;
+                view.findViewById<Button>(R.id.start_tracking_btn).isVisible = false
+                view.findViewById<Button>(R.id.end_tracking_btn).isVisible = true
             } else {
-                view.findViewById<Button>(R.id.start_tracking_btn).isVisible = true;
-                view.findViewById<Button>(R.id.end_tracking_btn).isVisible = false;
+                view.findViewById<Button>(R.id.start_tracking_btn).isVisible = true
+                view.findViewById<Button>(R.id.end_tracking_btn).isVisible = false
             }
         }
         return view
