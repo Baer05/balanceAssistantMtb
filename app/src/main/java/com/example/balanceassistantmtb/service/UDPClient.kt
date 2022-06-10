@@ -13,7 +13,7 @@ class UdpClient(private val handler: Handler) {
     private val bufferLength = 1024
     private val receiveByte = ByteArray(bufferLength)
 
-    private var isThreadRunning = false
+    var isThreadRunning = false
     private lateinit var clientThread: Thread
 
     fun startUDPSocket() {

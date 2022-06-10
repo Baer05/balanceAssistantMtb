@@ -89,7 +89,8 @@ class HomeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        udpSocket?.stopUDPSocket()
+        if(udpSocket?.isThreadRunning == true)
+            udpSocket?.stopUDPSocket()
     }
 }
 
