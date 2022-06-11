@@ -10,6 +10,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Add local libs repo
+        // If do not add this, when use our SDK, it will show ERROR: Failed to resolve: :XsensDotSdk:
+        flatDir {
+            dirs "libs"
+        }
+
     }
 }
 rootProject.name = "balanceAssistantMtb"

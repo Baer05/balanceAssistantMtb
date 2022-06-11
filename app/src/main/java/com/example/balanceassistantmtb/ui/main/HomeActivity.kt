@@ -1,32 +1,71 @@
-package com.example.balanceassistantmtb
+package com.example.balanceassistantmtb.ui.main
 
+import android.Manifest
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.util.Log
+import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.example.balanceassistantmtb.ui.main.DashboardFragment
-import com.example.balanceassistantmtb.ui.main.HomeFragment
+import com.example.balanceassistantmtb.MainActivity
+import com.example.balanceassistantmtb.R
+import com.example.balanceassistantmtb.interfaces.ScanClickInterface
+import com.example.balanceassistantmtb.utlils.Utils
+import com.example.balanceassistantmtb.viewmodels.BluetoothViewModel
+import com.example.balanceassistantmtb.viewmodels.SensorViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
+    private val tAG = MainActivity::class.java.simpleName
 
     private lateinit var homeFragment: HomeFragment
+    private lateinit var scanFragment: ScanFragment
     private lateinit var dashboardFragment: DashboardFragment
-    private var fragmentPos = 0
+    private lateinit var bottomNavigation: BottomNavigationView
+    private var fragmentPos = 0 //position of the fragment
+    private val requestEnableBLUETOOTH = 1001   // The code of request
+    private val requestPermissionLOCATION = 1002    // The code of request
+    private var mBluetoothViewModel: BluetoothViewModel? = null  // The Bluetooth view model instance
+    private var mSensorViewModel: SensorViewModel? = null   // The sensor view model instance
+    private var mIsScanning = false   // A variable for scanning flag
+    private var mScanListener: ScanClickInterface? = null   // Send the start/stop scan click event to fragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
         // Get the fragment to return to from extras 1:group, 2:feed, 0:profile
         val fragment = intent.extras?.get("fragment")
-        val bottomNavigation: BottomNavigationView = findViewById(R.id.btm_nav)
+        bottomNavigation = findViewById(R.id.btm_nav)
+        bindViewModel()
+        if(!checkBluetoothAndPermission()) {
+            Toast.makeText(this, "Failed to acquire permissions for scanning. App functionality not guaranteed!", Toast.LENGTH_LONG).show();
+        }
+        registerReceiver(mBluetoothStateReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         // display and set checked fragment in BottomNav
         when (fragment) {
             "1" -> {
-                dashboardFragment = DashboardFragment()
+                scanFragment = ScanFragment()
                 fragmentPos = 1
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.frame_layout, scanFragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit()
+                bottomNavigation.menu.findItem(R.id.scan).isChecked =true
+            }
+            "2" -> {
+                dashboardFragment = DashboardFragment()
+                fragmentPos = 2
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.frame_layout, dashboardFragment)
@@ -43,7 +82,6 @@ class HomeActivity : AppCompatActivity() {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
                 bottomNavigation.menu.findItem(R.id.home).isChecked = true
-
             }
         }
 
@@ -59,10 +97,20 @@ class HomeActivity : AppCompatActivity() {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit()
                 }
+                R.id.scan -> {
+                    scanFragment =
+                        ScanFragment()
+                    fragmentPos = 1
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frame_layout, scanFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit()
+                }
                 R.id.dashboard -> {
                     dashboardFragment =
                         DashboardFragment()
-                    fragmentPos = 1
+                    fragmentPos = 2
                     supportFragmentManager
                         .beginTransaction()
                         .replace(R.id.frame_layout, dashboardFragment)
@@ -74,6 +122,100 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(tAG, "onRequestPermissionsResult() - requestCode = $requestCode")
+        if (requestCode == requestPermissionLOCATION) {
+            for (i in grantResults.indices) {
+                if (permissions[i] == Manifest.permission.ACCESS_FINE_LOCATION) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) checkBluetoothAndPermission() else Toast.makeText(
+                        this,
+                        getString(R.string.hint_allow_location),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    /**
+     * Check the state of Bluetooth adapter and location permission.
+     */
+    private fun checkBluetoothAndPermission(): Boolean {
+        val isBluetoothEnabled: Boolean = Utils.isBluetoothAdapterEnabled(this)
+        Log.d(tAG, isBluetoothEnabled.toString())
+        val isPermissionGranted: Boolean = Utils.isLocationPermissionGranted(this)
+        Log.d(tAG, isPermissionGranted.toString())
+        if (isBluetoothEnabled) {
+            if (!isPermissionGranted) Utils.requestLocationPermission(
+                this,
+                requestPermissionLOCATION
+            )
+        } else {
+            Utils.requestEnableBluetooth(this, requestEnableBLUETOOTH)
+        }
+        val status = isBluetoothEnabled && isPermissionGranted
+        Log.i(tAG, "checkBluetoothAndPermission() - $status")
+        mBluetoothViewModel?.updateBluetoothEnableState(status)
+        return status
+    }
+
+    /**
+     * Initialize and observe view models.
+     */
+    private fun bindViewModel() {
+        mBluetoothViewModel = BluetoothViewModel.getInstance(this)
+        mBluetoothViewModel!!.isScanning().observe(this
+        ) { t -> // If the status of scanning is changed, try to refresh the menu.
+            mIsScanning = t
+            invalidateOptionsMenu()
+        }
+        mSensorViewModel = SensorViewModel.getInstance(this)
+    }
+
+    /**
+     * Set the trigger of scan button.
+     *
+     * @param listener The class which implemented ScanClickInterface
+     */
+    fun setScanTriggerListener(listener: ScanClickInterface) {
+        mScanListener = listener
+    }
+
+    /**
+     * A receiver for Bluetooth status.
+     */
+    private val mBluetoothStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            val action = intent.action
+            if (action != null) {
+                if (action == BluetoothAdapter.ACTION_STATE_CHANGED) {
+                    when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
+                        BluetoothAdapter.STATE_OFF -> mBluetoothViewModel!!.updateBluetoothEnableState(
+                            false
+                        )
+                        BluetoothAdapter.STATE_ON -> mBluetoothViewModel!!.updateBluetoothEnableState(
+                            true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        bindViewModel()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(mBluetoothStateReceiver)
+    }
 
     /**
      * close the app, when user is in HomeTab and press the android device back button. User gets

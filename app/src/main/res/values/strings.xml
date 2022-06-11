@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">balanceAssistantMtb</string>
     <string name="title_home">Home</string>
+    <string name="title_scan">Scan</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="exit">Exit balanceAssistantMtb</string>
     <string name="exit_message">Are you sure to close balanceAssistantMtb?</string>
@@ -11,4 +12,37 @@
     <string name="start_tracking">Aufnahme starten</string>
     <string name="end_tracking">Aufnahme beenden</string>
     <string name="no_data_available">Es sind noch keine Aufnahmen vorhanden. Starte eine um Daten anschauen zu können.</string>
+
+    <string name="hint_turn_on_bluetooth">Please turn on the Bluetooth adapter.</string>
+    <string name="hint_allow_location">Please allow location permission to use sensor(s).</string>
+    <string name="hint_connecting">Please wait for the connection result…</string>
+    <string name="hint_syncing_failed">Put sensors as close as possible and try again.</string>
+    <string name="hint_check_connection">Some sensors are disconnected. Please check the connection.</string>
+
+    <string name="menu_start_scan">Scan</string>
+    <string name="menu_stop_scan">Stop Scanning</string>
+    <string name="menu_start_streaming">Start</string>
+    <string name="menu_stop_streaming">Stop</string>
+    <string name="menu_measure">Measure</string>
+
+    <string name="disconnected">Disconnected</string>
+    <string name="connecting">Connecting</string>
+    <string name="connected">Connected</string>
+    <string name="reconnecting">Reconnecting</string>
+    <string name="batt_state_charging">Charging</string>
+    <string name="syncing">Syncing</string>
+    <string name="mode">Mode:</string>
+    <string name="sync_status">Sync status:</string>
+    <string name="sync_result_success">Success</string>
+    <string name="sync_result_fail">Fail</string>
+    <string name="mode_type">Complete (FreeAcc + Orientation)</string>
+    <string name="name">Name:</string>
+    <string name="orientation">Orientation (quaternion):</string>
+    <string name="free_acc">Free Acceleration (m/s²):</string>
+    <string name="scan">Scan for Devices</string>
+    <string name="fab_stop_scan">Stop Scan</string>
+    <string name="lsl_io_exception">\"Unable to open LSL outlet. Please allow the INTERNET permission.\"</string>
+    <string name="wake_lock_acquired">WakeLock acquired</string>
+    <string name="wake_lock_already_acquired">WakeLock was already active!</string>
+
 </resources>
