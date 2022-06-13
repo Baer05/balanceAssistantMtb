@@ -42,7 +42,6 @@ import com.xsens.dot.android.sdk.models.XsensDotSyncManager
 import java.io.IOException
 import java.lang.ref.WeakReference
 
-
 class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, RecodingClickInterface {
 
     private val tAG: String = HomeFragment::class.java.name
@@ -65,7 +64,6 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
         if (container != null) {
             thisContext = container.context
         }
-
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         val actionBar = view.findViewById<Toolbar>(R.id.toolbar)
@@ -89,7 +87,6 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
         }
 
         mSensorViewModel?.setStates(PLOT_STATE_ON, LOG_STATE_ON);
-
         mDataAdapter = DataAdapter(context!!, mDataList)
 
         recyclerView = view.findViewById<RecyclerView>(R.id.data_recycler_view)
@@ -161,10 +158,8 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     }
 
     override fun onSyncingStarted(address: String, isSuccess: Boolean, requestCode: Int) {
-        Log.i(
-            tAG,
-            "onSyncingStarted() - address = $address, isSuccess = $isSuccess, requestCode = $requestCode"
-        )
+        Log.i(tAG, "onSyncingStarted() - address = $address, isSuccess = $isSuccess," +
+                " requestCode = $requestCode")
     }
 
     override fun onSyncingProgress(progress: Int, requestCode: Int) {
@@ -185,17 +180,12 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     }
 
     override fun onSyncingResult(address: String, isSuccess: Boolean, requestCode: Int) {
-        Log.i(
-            tAG,
-            "onSyncingResult() - address = $address, isSuccess = $isSuccess, requestCode = $requestCode"
-        )
+        Log.i(tAG, "onSyncingResult() - address = $address, isSuccess = $isSuccess, " +
+                "requestCode = $requestCode")
     }
 
     override fun onSyncingDone(
-        syncingResultMap: HashMap<String?, Boolean?>,
-        isSuccess: Boolean,
-        requestCode: Int
-    ) {
+        syncingResultMap: HashMap<String?, Boolean?>, isSuccess: Boolean, requestCode: Int) {
         Log.i(tAG, "onSyncingDone() - isSuccess = $isSuccess, requestCode = $requestCode")
         if (requestCode == syncingRequestCode) {
             if (activity != null) {
@@ -205,16 +195,12 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                     if (isSuccess) {
                         view?.findViewById<TextView>(R.id.sync_result)?.text =
                             (R.string.sync_result_success.toString())
-
                         // Syncing precess is success, choose one measurement mode to start measuring.
                         mSensorViewModel!!.setMeasurementMode(PAYLOAD_TYPE_COMPLETE_QUATERNION)
-
                         //createFiles();
                         mSensorViewModel!!.setMeasurement(true)
-
                         //all sensors are in syncingResultsMaps -> if success is true -> all syncing is true
                         try {
-
                             //acquire wakelock
                             if (!mWakeLock?.isHeld!!) {
                                 mWakeLock?.acquire()
@@ -229,14 +215,6 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                                     getString(R.string.wake_lock_already_acquired),
                                     Toast.LENGTH_LONG
                                 ).show()
-                            }
-                            //mlslManager.reset()
-                            for (device in mSensorViewModel!!.getAllSensors()!!) {
-                                //mlslManager.addXSensLSLStream(
-                                    //device.address,
-                                    //device.tag,
-                                    //device.currentOutputRate
-                                //)
                             }
                         } catch (ex: IOException) {
                             Toast.makeText(
@@ -270,9 +248,8 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     }
 
     override fun onSyncingStopped(address: String, isSuccess: Boolean, requestCode: Int) {
-        Log.i(
-            tAG,
-            "onSyncingStopped() - address = $address, isSuccess = $isSuccess, requestCode = $requestCode"
+        Log.i(tAG, "onSyncingStopped() - address = $address, " +
+                "isSuccess = $isSuccess, requestCode = $requestCode"
         )
     }
 
