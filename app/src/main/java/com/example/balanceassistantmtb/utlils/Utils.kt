@@ -12,7 +12,6 @@ import android.os.Looper
 object Utils {
     /**
      * Check the current thread is main thread or background thread.
-     *
      * @return True - If running on main thread
      */
     fun isMainThread(): Boolean {
@@ -21,7 +20,6 @@ object Utils {
 
     /**
      * Check the Bluetooth adapter is enabled or not.
-     *
      * @param context The application context
      * @return True - if the Bluetooth adapter is on
      */
@@ -35,7 +33,6 @@ object Utils {
 
     /**
      * If the Bluetooth adapter is disabled, popup a system dialog for user to enable it.
-     *
      * @param activity    The main activity
      * @param requestCode The request code for this intent
      */
@@ -46,7 +43,6 @@ object Utils {
 
     /**
      * Above Android 6.0+, user have to  allow app to access location information then scan BLE device.
-     *
      * @param activity The activity class
      * @return True - if the permission is granted
      */
@@ -56,7 +52,6 @@ object Utils {
 
     /**
      * If the location permission isn't granted, popup a system dialog for user to enable it.
-     *
      * @param activity    The main activity
      * @param requestCode The request code for this action
      */

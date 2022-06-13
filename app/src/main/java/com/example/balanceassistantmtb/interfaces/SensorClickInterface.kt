@@ -38,7 +38,6 @@ import android.view.View
 interface SensorClickInterface {
     /**
      * This function will be triggered when the item view is clicked.
-     *
      * @param v        The item view
      * @param position The position of item view
      */

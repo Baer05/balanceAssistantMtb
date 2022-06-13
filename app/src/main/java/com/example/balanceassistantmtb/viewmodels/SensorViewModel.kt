@@ -24,11 +24,12 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
     private val mConnectionChangedSensor = MutableLiveData<XsensDotDevice>()    // A variable to notify the connection state
     private val mTagChangedSensor = MutableLiveData<XsensDotDevice>()    // A variable to notify the tag name
     private val mFirmwareChangedSensor = MutableLiveData<XsensDotDevice>()   // A variable to notify the firmware version
+    private val mIsRecording = MutableLiveData<Boolean>()    // A variable to notify the streaming status
+
 
     companion object {
         /**
          * Get the instance of SensorViewModel
-         *
          * @param owner The life cycle owner from activity/fragment
          * @return The SensorViewModel
          */
@@ -42,7 +43,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Initialize data changes interface.
-     *
      * @param callback The class which implemented DataChangeInterface
      */
     fun setDataChangeCallback(callback: DataChangeInterface) {
@@ -51,7 +51,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Initialize battery changes interface.
-     *
      * @param callback The class which implemented setBatteryChangedCallback
      */
     fun setBatteryChangedCallback(callback: BatteryChangedInterface) {
@@ -60,7 +59,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Get the XsensDotDevice object from list by mac address.
-     *
      * @param address The mac address of device
      * @return The XsensDotDevice object
      */
@@ -76,7 +74,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Get all XsensDotDevice objects from list.
-     *
      * @return The list contains all devices
      */
     fun getAllSensors(): ArrayList<XsensDotDevice>? {
@@ -85,7 +82,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Initialize, connect the XsensDotDevice and put it into a list.
-     *
      * @param context The application context
      * @param device  The scanned Bluetooth device
      */
@@ -97,7 +93,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Disconnect one device by mac address.
-     *
      * @param address The mac address of device
      */
     fun disconnectSensor(address: String) {
@@ -130,7 +125,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Cancel reconnection of one sensor.
-     *
      * @param address The mac address of device
      */
     fun cancelReconnection(address: String) {
@@ -146,7 +140,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Check the connection state of all sensors.
-     *
      * @return True - If all sensors are connected
      */
     fun checkConnection(): Boolean {
@@ -164,7 +157,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Get the tag name from sensor.
-     *
      * @param address The mac address of device
      * @return The tag name
      */
@@ -179,7 +171,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Set the plotting and logging states for each device.
-     *
      * @param plot The plot state
      * @param log  The log state
      */
@@ -195,7 +186,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Set the measurement mode to all sensors.
-     *
      * @param mode The measurement mode
      */
     fun setMeasurementMode(mode: Int) {
@@ -209,7 +199,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Set one sensor for root of synchronization.
-     *
      * @param isRoot True - If set to root
      */
     fun setRootDevice(isRoot: Boolean) {
@@ -219,7 +208,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Start/Stop measuring for each sensor.
-     *
      * @param enabled True - Start outputting data
      */
     fun setMeasurement(enabled: Boolean) {
@@ -233,12 +221,12 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Add the XsensDotDevice to a list, the UID is mac address.
-     *
      * @param xsDevice The XsensDotDevice object
      */
     private fun addDevice(xsDevice: XsensDotDevice) {
         if (mSensorList.value == null) mSensorList.value = ArrayList()
         val devices = mSensorList.value
+        Log.d(tAG, "devices: $devices")
         var isExist = false
         for (_xsDevice in devices!!) {
             if (xsDevice.address == _xsDevice.address) {
@@ -246,12 +234,12 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
                 break
             }
         }
+        Log.d(tAG, "device: $xsDevice")
         if (!isExist) devices.add(xsDevice)
     }
 
     /**
      * If device is disconnected by user means don't need to reconnect. So remove this device from list by mac address.
-     *
      * @param address The mac address of device
      */
     fun removeDevice(address: String) {
@@ -284,7 +272,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Observe this function to listen which device's connection state is changed.
-     *
      * @return The latest updated device
      */
     fun getConnectionChangedDevice(): MutableLiveData<XsensDotDevice> {
@@ -293,7 +280,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Observe this function to listen which device's tag name is changed.
-     *
      * @return The latest updated device
      */
     fun getTagChangedDevice(): MutableLiveData<XsensDotDevice> {
@@ -302,7 +288,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     /**
      * Observe this function to listen which device's firmware is changed.
-     *
      * @return The latest updated device
      */
     fun getFirmwareChangedDevice(): MutableLiveData<XsensDotDevice> {
@@ -413,5 +398,22 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
 
     override fun onSyncStatusUpdate(address: String, isSynced: Boolean) {
         Log.i(tAG, "onSyncStatusUpdate() - address = $address, isSynced = $isSynced")
+    }
+
+    /**
+     * Observe this function to listen the recording status.
+     * @return The latest streaming status
+     */
+    fun isRecording(): MutableLiveData<Boolean> {
+        if (mIsRecording.value == null) mIsRecording.value = false
+        return mIsRecording
+    }
+
+    /**
+     * Notify the recording status to activity/fragment
+     * @param status The status of recording
+     */
+    fun updateRecordingStatus(status: Boolean) {
+        mIsRecording.postValue(status)
     }
 }

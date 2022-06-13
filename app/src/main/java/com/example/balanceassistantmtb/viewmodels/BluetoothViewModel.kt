@@ -9,7 +9,6 @@ class BluetoothViewModel: ViewModel() {
     companion object {
         /**
          * Get the instance of BluetoothViewModel
-         *
          * @param owner The life cycle owner from activity/fragment
          * @return The BluetoothViewModel
          */
@@ -28,7 +27,6 @@ class BluetoothViewModel: ViewModel() {
 
     /**
      * Observe this function to listen the status of Bluetooth adapter.
-     *
      * @return The latest status
      */
     fun isBluetoothEnabled(): MutableLiveData<Boolean> {
@@ -37,7 +35,6 @@ class BluetoothViewModel: ViewModel() {
 
     /**
      * Notify the Bluetooth adapter status to activity/fragment
-     *
      * @param enabled he status of Bluetooth
      */
     fun updateBluetoothEnableState(enabled: Boolean) {
@@ -46,7 +43,6 @@ class BluetoothViewModel: ViewModel() {
 
     /**
      * Observe this function to listen the scanning status.
-     *
      * @return The latest scan status
      */
     fun isScanning(): MutableLiveData<Boolean> {
@@ -55,7 +51,6 @@ class BluetoothViewModel: ViewModel() {
 
     /**
      * Notify the scan status to activity/fragment
-     *
      * @param scanning The status of scanning
      */
     fun updateScanState(scanning: Boolean) {

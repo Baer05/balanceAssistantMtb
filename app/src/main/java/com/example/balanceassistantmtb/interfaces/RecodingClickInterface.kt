@@ -33,9 +33,9 @@ package com.example.balanceassistantmtb.interfaces
 /**
  * This class is to react click event between fragment and activity.
  */
-interface StreamingClickInterface {
+interface RecodingClickInterface {
     /**
      * This function will be triggered when the start/stop measurement button is clicked.
      */
-    fun onStreamingTriggered()
+    fun onRecordingTriggered()
 }

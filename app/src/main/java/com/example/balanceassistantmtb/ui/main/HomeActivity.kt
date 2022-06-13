@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.example.balanceassistantmtb.MainActivity
 import com.example.balanceassistantmtb.R
+import com.example.balanceassistantmtb.interfaces.RecodingClickInterface
 import com.example.balanceassistantmtb.interfaces.ScanClickInterface
 import com.example.balanceassistantmtb.utlils.Utils
 import com.example.balanceassistantmtb.viewmodels.BluetoothViewModel
@@ -36,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
     private var mSensorViewModel: SensorViewModel? = null   // The sensor view model instance
     private var mIsScanning = false   // A variable for scanning flag
     private var mScanListener: ScanClickInterface? = null   // Send the start/stop scan click event to fragment
-
+    private var mRecordingListener: RecodingClickInterface? = null  // Send the start/stop streaming click event to fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,12 +177,21 @@ class HomeActivity : AppCompatActivity() {
 
     /**
      * Set the trigger of scan button.
-     *
      * @param listener The class which implemented ScanClickInterface
      */
     fun setScanTriggerListener(listener: ScanClickInterface) {
         mScanListener = listener
     }
+
+
+    /**
+     * Set the trigger of streaming button.
+     * @param listener The class which implemented StreamingClickInterface
+     */
+    fun setRecordingTriggerListener(listener: RecodingClickInterface) {
+        mRecordingListener = listener
+    }
+
 
     /**
      * A receiver for Bluetooth status.

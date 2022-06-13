@@ -88,7 +88,7 @@
             app:layout_constraintTop_toBottomOf="@id/no_group_info" />
 
         <Button
-            android:id="@+id/start_tracking_btn"
+            android:id="@+id/tracking_btn"
             style="@style/Widget.App.AppButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,15 +97,67 @@
             app:layout_constraintTop_toBottomOf="@id/group_list"
             tools:layout_editor_absoluteX="24dp" />
 
-        <Button
-            android:id="@+id/end_tracking_btn"
-            style="@style/Widget.App.AppButton"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="98dp"
-            android:text="@string/end_tracking"
-            app:layout_constraintTop_toBottomOf="@id/group_list"
-            tools:layout_editor_absoluteX="24dp" />
+            android:layout_height="300dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tracking_btn" >
+
+            <TextView
+                android:id="@+id/mode_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mode"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/mode_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mode_label" />
+
+            <TextView
+                android:id="@+id/sync_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/sync_status"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mode" />
+
+            <TextView
+                android:id="@+id/sync_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="-"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sync_label"
+                tools:ignore="HardcodedText" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/data_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sync_result" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

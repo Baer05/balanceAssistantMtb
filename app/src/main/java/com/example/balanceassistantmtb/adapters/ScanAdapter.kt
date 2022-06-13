@@ -81,7 +81,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Get the Bluetooth device.
-     *
      * @param position The position of item view
      * @return The scanned Bluetooth device
      */
@@ -91,7 +90,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Get the connection state of device.
-     *
      * @param position The position of item view
      * @return The connection state
      */
@@ -101,7 +99,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Update the connection state to list.
-     *
      * @param position The position of item view
      * @param state    The connection state
      */
@@ -111,7 +108,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Update tag name to the list.
-     *
      * @param address The mac address of device
      * @param tag     The device tag
      */
@@ -129,7 +125,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Update firmware to the list.
-     *
      * @param address The mac address of device
      * @param firmware The device firmware
      */
@@ -147,7 +142,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Update battery information to the list.
-     *
      * @param address    The mac address of device
      * @param state      This state can be one of BATT_STATE_NOT_CHARGING or BATT_STATE_CHARGING
      * @param percentage The range of battery level is 0 to 100
@@ -167,7 +161,6 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
 
     /**
      * Initialize click listener of item view.
-     *
      * @param listener The fragment which implemented SensorClickInterface
      */
     fun setSensorClickListener(listener: SensorClickInterface) {

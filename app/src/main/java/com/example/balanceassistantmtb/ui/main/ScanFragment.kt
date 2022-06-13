@@ -60,7 +60,7 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_scan, container, false)
         val actionBar = view.findViewById<Toolbar>(R.id.toolbar)
-        actionBar.title = "Scan"
+        actionBar.title = getString(R.string.scan)
         (requireActivity() as AppCompatActivity).setSupportActionBar(actionBar)
 
         mScanAdapter = context?.let { ScanAdapter(it, mScannedSensorList) }
