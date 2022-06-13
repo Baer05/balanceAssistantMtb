@@ -45,7 +45,6 @@ import java.lang.ref.WeakReference
 class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, RecodingClickInterface {
 
     private val tAG: String = HomeFragment::class.java.name
-
     private lateinit var thisContext: Context
     private val isButtonStart = MutableLiveData<Boolean>(false)
     private var udpSocket: UdpClient? = null
@@ -204,24 +203,12 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                             //acquire wakelock
                             if (!mWakeLock?.isHeld!!) {
                                 mWakeLock?.acquire()
-                                Toast.makeText(
-                                    context,
-                                    getString(R.string.wake_lock_acquired),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                doToast(getString(R.string.wake_lock_acquired))
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    getString(R.string.wake_lock_already_acquired),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                doToast(getString(R.string.wake_lock_already_acquired))
                             }
                         } catch (ex: IOException) {
-                            Toast.makeText(
-                                context,
-                                getString(R.string.lsl_io_exception),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            doToast(getString(R.string.lsl_io_exception))
                             if (mWakeLock?.isHeld == true) mWakeLock?.release()
                         }
                     } else {
@@ -229,11 +216,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                             (R.string.sync_result_fail).toString()
 
                         // If the syncing result is fail, show a message to user
-                        Toast.makeText(
-                            context,
-                            getString(R.string.hint_syncing_failed),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        doToast(getString(R.string.hint_syncing_failed))
                         for ((address, value) in syncingResultMap.entries) {
                             if (!value!!) {
                                 // Get the key of this failed device.
@@ -327,11 +310,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
             resetPage()
             Log.d(tAG,"sensors: ${mSensorViewModel?.getAllSensors()}")
             if (!mSensorViewModel!!.checkConnection()) {
-                Toast.makeText(
-                    context,
-                    getString(R.string.hint_check_connection),
-                    Toast.LENGTH_LONG
-                ).show()
+                doToast(getString(R.string.hint_check_connection))
                 return
             }
             // Set first device to root.

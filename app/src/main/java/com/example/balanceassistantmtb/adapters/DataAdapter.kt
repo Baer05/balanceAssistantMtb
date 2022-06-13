@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.balanceassistantmtb.R
 import com.xsens.dot.android.sdk.events.XsensDotData
 
-
 class DataAdapter(var context: Context, var mDataList: ArrayList<HashMap<String, Any>>):
     RecyclerView.Adapter<DataAdapter.DataViewHolder>() {
 

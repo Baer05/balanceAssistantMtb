@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigation = findViewById(R.id.btm_nav)
         bindViewModel()
         if(!checkBluetoothAndPermission()) {
-            Toast.makeText(this, "Failed to acquire permissions for scanning. App functionality not guaranteed!", Toast.LENGTH_LONG).show();
+            doToast("Failed to acquire permissions for scanning. App functionality not guaranteed!")
         }
         registerReceiver(mBluetoothStateReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -132,14 +132,18 @@ class HomeActivity : AppCompatActivity() {
         if (requestCode == requestPermissionLOCATION) {
             for (i in grantResults.indices) {
                 if (permissions[i] == Manifest.permission.ACCESS_FINE_LOCATION) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) checkBluetoothAndPermission() else Toast.makeText(
-                        this,
-                        getString(R.string.hint_allow_location),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) checkBluetoothAndPermission()
+                    else doToast(getString(R.string.hint_allow_location))
                 }
             }
         }
+    }
+
+    /**
+     * shows message, which can come back from callBack functions
+     * */
+    private fun doToast (msg: String) {
+        Toast.makeText(this@HomeActivity, msg, Toast.LENGTH_SHORT).show()
     }
 
     /**
@@ -173,6 +177,9 @@ class HomeActivity : AppCompatActivity() {
             invalidateOptionsMenu()
         }
         mSensorViewModel = SensorViewModel.getInstance(this)
+        mSensorViewModel!!.isRecording().observe(this) {
+            invalidateOptionsMenu()
+        }
     }
 
     /**

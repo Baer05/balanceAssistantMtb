@@ -26,7 +26,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
     private val mFirmwareChangedSensor = MutableLiveData<XsensDotDevice>()   // A variable to notify the firmware version
     private val mIsRecording = MutableLiveData<Boolean>()    // A variable to notify the streaming status
 
-
     companion object {
         /**
          * Get the instance of SensorViewModel

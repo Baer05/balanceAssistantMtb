@@ -22,7 +22,7 @@ class DashboardFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
         val actionBar = view.findViewById<Toolbar>(R.id.toolbar)
-        actionBar.title = "Dashboard"
+        actionBar.title = getString(R.string.title_dashboard)
         (requireActivity() as AppCompatActivity).setSupportActionBar(actionBar)
         return view
     }
