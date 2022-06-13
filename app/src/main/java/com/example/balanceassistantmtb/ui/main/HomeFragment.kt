@@ -286,16 +286,16 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     private fun resetPage() {
         mBinding?.syncResult?.text = ("-")
         mDataList.clear()
-        mDataAdapter!!.notifyDataSetChanged()
-        if (mWakeLock!!.isHeld) mWakeLock!!.release()
+        mDataAdapter?.notifyDataSetChanged()
+        if (mWakeLock?.isHeld == true) mWakeLock?.release()
     }
 
 
     override fun onRecordingTriggered() {
         if (mSensorViewModel?.isRecording()?.value == true) {
             // To stop.
-            mSensorViewModel!!.setMeasurement(false)
-            mSensorViewModel!!.updateRecordingStatus(false)
+            mSensorViewModel?.setMeasurement(false)
+            mSensorViewModel?.updateRecordingStatus(false)
             XsensDotSyncManager.getInstance(this).stopSyncing()
             if (mWakeLock!!.isHeld)// mlslManager.reset()
             mWakeLock!!.release()
@@ -304,18 +304,19 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
             // To start.
             resetPage()
             Log.d(tAG,"sensors: ${mSensorViewModel?.getAllSensors()}")
-            if (!mSensorViewModel!!.checkConnection()) {
+            Log.d(tAG,"sensors: ${mSensorViewModel?.checkConnection()}")
+            if (!mSensorViewModel?.checkConnection()!!) {
                 doToast(getString(R.string.hint_check_connection))
                 return
             }
             // Set first device to root.
-            mSensorViewModel!!.setRootDevice(true)
-            val devices = mSensorViewModel!!.getAllSensors()
+            mSensorViewModel?.setRootDevice(true)
+            val devices = mSensorViewModel?.getAllSensors()
             Log.d(tAG, "Test, $devices" )
             // Devices will disconnect during the syncing, and do reconnection automatically.
             XsensDotSyncManager.getInstance(this).startSyncing(devices!!, syncingRequestCode)
-            Log.d(tAG, "Test, ${mSyncingDialog!!.isShowing}" )
-            if (!mSyncingDialog!!.isShowing) mSyncingDialog!!.show()
+            Log.d(tAG, "Test, ${mSyncingDialog?.isShowing}" )
+            if (!mSyncingDialog?.isShowing!!) mSyncingDialog?.show()
         }
     }
 

@@ -143,7 +143,9 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
      */
     fun checkConnection(): Boolean {
         val devices = mSensorList.value
+        Log.d(tAG, "checkConnection(): $devices")
         if (devices != null) {
+            Log.d(tAG, "checkConnection(): $devices")
             for (device in devices) {
                 val state = device.connectionState
                 if (state != CONN_STATE_CONNECTED) return false
