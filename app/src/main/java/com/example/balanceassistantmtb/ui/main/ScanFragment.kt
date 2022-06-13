@@ -27,7 +27,6 @@ import com.example.balanceassistantmtb.interfaces.ScanClickInterface
 import com.example.balanceassistantmtb.interfaces.SensorClickInterface
 import com.example.balanceassistantmtb.viewmodels.BluetoothViewModel
 import com.example.balanceassistantmtb.viewmodels.SensorViewModel
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.xsens.dot.android.sdk.interfaces.XsensDotScannerCallback
 import com.xsens.dot.android.sdk.models.XsensDotDevice.*
 import com.xsens.dot.android.sdk.utils.XsensDotScanner
@@ -37,7 +36,7 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
 
     private val tAG = ScanFragment::class.java.simpleName
     private lateinit var thisContext: Context
-    private var mBinding: FragmentScanBinding? = null   // The view binder of ScanFragment
+    private lateinit var mBinding: FragmentScanBinding  // The view binder of ScanFragment
     private var mXsDotScanner: XsensDotScanner? = null   // The XsensDotScanner object
     private val mScannedSensorList: ArrayList<HashMap<String, Any>> = ArrayList()   // A list contains scanned Bluetooth device
     private var mBluetoothViewModel: BluetoothViewModel? = null  // The Bluetooth view model instance
@@ -52,27 +51,27 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         if (container != null) {
             thisContext = container.context
         }
         // Inflate the layout for this fragment
         mBinding = FragmentScanBinding.inflate(LayoutInflater.from(context))
-        mBinding!!.toolbar.title = getString(R.string.title_scan)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding!!.toolbar)
+        mBinding.toolbar.title = getString(R.string.title_scan)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding.toolbar)
 
         mScanAdapter = context?.let { ScanAdapter(it, mScannedSensorList) }
         mScanAdapter!!.setSensorClickListener(this)
 
-        mBinding?.fab?.shrink()
-        mBinding!!.fab.setOnClickListener { onScanTriggered(!mIsScanning) }
+        mBinding.fab.shrink()
+        mBinding.fab.setOnClickListener { onScanTriggered(!mIsScanning) }
 
 
         val recyclerViewLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context)
-        mBinding?.sensorRecyclerView?.layoutManager = recyclerViewLayoutManager
-        mBinding?.sensorRecyclerView?.itemAnimator = DefaultItemAnimator()
-        mBinding?.sensorRecyclerView?.adapter = mScanAdapter
+        mBinding.sensorRecyclerView.layoutManager = recyclerViewLayoutManager
+        mBinding.sensorRecyclerView.itemAnimator = DefaultItemAnimator()
+        mBinding.sensorRecyclerView.adapter = mScanAdapter
 
         // Set the SensorClickInterface instance to main activity.
         if (activity != null) {
@@ -86,7 +85,7 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
         connectionDialogBuilder.setMessage(getString(R.string.hint_connecting))
         mConnectionDialog = connectionDialogBuilder.create()
 
-        return mBinding?.root
+        return mBinding.root
     }
 
     override fun onScanTriggered(started: Boolean) {
@@ -110,9 +109,9 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
 
     private fun updateFABState() {
         if(mIsScanning)
-            mBinding?.fab?.extend();
+            mBinding.fab.extend()
         else
-            mBinding?.fab?.shrink();
+            mBinding.fab.shrink()
 
     }
 
@@ -283,8 +282,8 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
     override fun onDestroy() {
         super.onDestroy()
         // Stop scanning to let other apps to use scan function.
-        mXsDotScanner?.stopScan();
-        mBluetoothViewModel?.updateScanState(false);
+        mXsDotScanner?.stopScan()
+        mBluetoothViewModel?.updateScanState(false)
     }
 
     override fun onDetach() {

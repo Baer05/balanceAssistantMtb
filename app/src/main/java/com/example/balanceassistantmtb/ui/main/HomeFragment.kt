@@ -1,7 +1,6 @@
 package com.example.balanceassistantmtb.ui.main
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -44,7 +43,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
 
     private val tAG = HomeFragment::class.java.simpleName
     private lateinit var thisContext: Context
-    private var mBinding: FragmentHomeBinding? = null   // The view binder of ScanFragment
+    private lateinit var mBinding: FragmentHomeBinding   // The view binder of ScanFragment
     private val isButtonStart = MutableLiveData<Boolean>(false)
     private var udpSocket: UdpClient? = null
     private val outerClass = WeakReference<HomeFragment>(this)
@@ -57,38 +56,38 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     private var mWakeLock: WakeLock? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+                              savedInstanceState: Bundle?): View {
         if (container != null) {
             thisContext = container.context
         }
         // Inflate the layout for this fragment
         mBinding = FragmentHomeBinding.inflate(LayoutInflater.from(context));
-        mBinding!!.toolbar.title = getString(R.string.title_home)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding?.toolbar)
+        mBinding.toolbar.title = getString(R.string.title_home)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding.toolbar)
 
         udpSocket = UdpClient(handler)
 
-        mBinding?.trackingBtn?.setOnClickListener {
+        mBinding.trackingBtn.setOnClickListener {
             isButtonStart.value = !isButtonStart.value!!
             buttonAction()
         }
 
         isButtonStart.observe(viewLifecycleOwner) {
             if (isButtonStart.value == false) {
-                mBinding?.trackingBtn?.text =  getString(R.string.start_tracking)
+                mBinding.trackingBtn.text =  getString(R.string.start_tracking)
             } else {
-                mBinding?.trackingBtn?.text =  getString(R.string.end_tracking)
+                mBinding.trackingBtn.text =  getString(R.string.end_tracking)
             }
         }
 
-        mSensorViewModel?.setStates(PLOT_STATE_ON, LOG_STATE_ON);
+        mSensorViewModel?.setStates(PLOT_STATE_ON, LOG_STATE_ON)
         mDataAdapter = DataAdapter(context!!, mDataList)
 
         val recyclerViewLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context)
-        mBinding?.dataRecyclerView?.layoutManager = recyclerViewLayoutManager
-        mBinding?.dataRecyclerView?.itemAnimator = DefaultItemAnimator()
-        mBinding?.dataRecyclerView?.adapter = mDataAdapter
+        mBinding.dataRecyclerView.layoutManager = recyclerViewLayoutManager
+        mBinding.dataRecyclerView.itemAnimator = DefaultItemAnimator()
+        mBinding.dataRecyclerView.adapter = mDataAdapter
 
         val syncingDialogBuilder = AlertDialog.Builder(
             activity!!
@@ -96,11 +95,11 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
         syncingDialogBuilder.setView(R.layout.dialog_syncing)
         syncingDialogBuilder.setCancelable(false)
         mSyncingDialog = syncingDialogBuilder.create()
-        mSyncingDialog?.setOnDismissListener(DialogInterface.OnDismissListener {
+        mSyncingDialog?.setOnDismissListener {
             val bar = mSyncingDialog?.findViewById<ProgressBar>(R.id.syncing_progress)
             // Reset progress to 0 for next time to use.
             if (bar != null) bar.progress = 0
-        })
+        }
 
         // Set the StreamingClickInterface instance to main activity.
         if (activity != null) (activity as HomeActivity?)?.setRecordingTriggerListener(this)
@@ -109,7 +108,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
         mWakeLock =
             powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "XSensLSLStreamer::Streaming")
 
-        return mBinding?.root
+        return mBinding.root
     }
 
     override fun onAttach(context: Context) {
@@ -187,7 +186,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                     if (mSyncingDialog?.isShowing == true) mSyncingDialog!!.dismiss()
                     mSensorViewModel!!.setRootDevice(false)
                     if (isSuccess) {
-                        mBinding?.syncResult?.text =
+                        mBinding.syncResult.text =
                             (R.string.sync_result_success.toString())
                         // Syncing precess is success, choose one measurement mode to start measuring.
                         mSensorViewModel!!.setMeasurementMode(PAYLOAD_TYPE_COMPLETE_QUATERNION)
@@ -207,7 +206,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                             if (mWakeLock?.isHeld == true) mWakeLock?.release()
                         }
                     } else {
-                        mBinding?.syncResult?.text =
+                        mBinding.syncResult.text =
                             (R.string.sync_result_fail).toString()
 
                         // If the syncing result is fail, show a message to user
@@ -253,7 +252,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                 map[keyDATA] = data
                 mDataList.add(map)
             }
-            //updateFiles(address, data);
+            //updateFiles(address, data)
             if (activity != null) {
                 activity!!.runOnUiThread { // The data is coming from background thread, change to UI thread for updating.
                     mDataAdapter?.notifyDataSetChanged()
@@ -284,7 +283,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
      * Reset page UI to default.
      */
     private fun resetPage() {
-        mBinding?.syncResult?.text = ("-")
+        mBinding.syncResult.text = ("-")
         mDataList.clear()
         mDataAdapter?.notifyDataSetChanged()
         if (mWakeLock?.isHeld == true) mWakeLock?.release()

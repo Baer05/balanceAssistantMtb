@@ -21,7 +21,6 @@ import com.example.balanceassistantmtb.interfaces.ScanClickInterface
 import com.example.balanceassistantmtb.utlils.Utils
 import com.example.balanceassistantmtb.viewmodels.BluetoothViewModel
 import com.example.balanceassistantmtb.viewmodels.SensorViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
     private val tAG = HomeActivity::class.java.simpleName
@@ -30,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var scanFragment: ScanFragment
     private lateinit var dashboardFragment: DashboardFragment
     private var fragmentPos = 0 //position of the fragment
-    private var mBinding: ActivityHomeBinding? = null   // The view binder of MainActivity
+    private lateinit var mBinding: ActivityHomeBinding   // The view binder of MainActivity
     private val requestEnableBLUETOOTH = 1001   // The code of request
     private val requestPermissionLOCATION = 1002    // The code of request
     private var mBluetoothViewModel: BluetoothViewModel? = null  // The Bluetooth view model instance
@@ -42,7 +41,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityHomeBinding.inflate(LayoutInflater.from(this));
-        setContentView(mBinding!!.root)
+        setContentView(mBinding.root)
         // Get the fragment to return to from extras 1:group, 2:feed, 0:profile
         val fragment = intent.extras?.get("fragment")
         bindViewModel()
@@ -62,7 +61,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, scanFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                mBinding?.btmNav?.menu?.findItem(R.id.scan)?.isChecked =true
+                mBinding.btmNav.menu.findItem(R.id.scan).isChecked =true
             }
             "2" -> {
                 dashboardFragment = DashboardFragment()
@@ -72,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, dashboardFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                mBinding?.btmNav?.menu?.findItem(R.id.dashboard)?.isChecked =true
+                mBinding.btmNav.menu.findItem(R.id.dashboard).isChecked =true
             }
             else -> {
                 homeFragment = HomeFragment()
@@ -82,11 +81,11 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, homeFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                mBinding?.btmNav?.menu?.findItem(R.id.home)?.isChecked = true
+                mBinding.btmNav.menu.findItem(R.id.home).isChecked = true
             }
         }
 
-        mBinding?.btmNav?.setOnNavigationItemSelectedListener { item ->
+        mBinding.btmNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
                     homeFragment =
