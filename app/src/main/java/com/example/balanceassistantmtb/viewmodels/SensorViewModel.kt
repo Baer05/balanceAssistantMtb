@@ -288,7 +288,6 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
      * @return The latest updated device
      */
     fun getConnectionChangedDevice(): MutableLiveData<XsensDotDevice> {
-        Log.d(tAG, "test")
         return mConnectionChangedSensor
     }
 

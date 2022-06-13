@@ -61,6 +61,7 @@ object Utils {
      * @param requestCode The request code for this action
      */
     fun requestLocationPermission(activity: Activity, requestCode: Int) {
-        activity.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), requestCode)
+        activity.requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT), requestCode)
     }
 }

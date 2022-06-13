@@ -128,7 +128,6 @@ class HomeActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(tAG, "onRequestPermissionsResult() - requestCode = $requestCode")
         if (requestCode == requestPermissionLOCATION) {
             for (i in grantResults.indices) {
                 if (permissions[i] == Manifest.permission.ACCESS_FINE_LOCATION) {
@@ -147,9 +146,7 @@ class HomeActivity : AppCompatActivity() {
      */
     private fun checkBluetoothAndPermission(): Boolean {
         val isBluetoothEnabled: Boolean = Utils.isBluetoothAdapterEnabled(this)
-        Log.d(tAG, isBluetoothEnabled.toString())
         val isPermissionGranted: Boolean = Utils.isLocationPermissionGranted(this)
-        Log.d(tAG, isPermissionGranted.toString())
         if (isBluetoothEnabled) {
             if (!isPermissionGranted) Utils.requestLocationPermission(
                 this,

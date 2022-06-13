@@ -67,9 +67,9 @@ class ScanAdapter(var context: Context, var scannedSensorList: ArrayList<HashMap
                 holder.sensorState.text =(context.resources.getString(R.string.reconnecting))
             }
         }
-        holder.v.setOnClickListener(View.OnClickListener { v -> // Notify the position of click event to fragment.
+        holder.v.setOnClickListener { v -> // Notify the position of click event to fragment.
             mListener?.onSensorClick(v, position)
-        })
+        }
     }
 
     /**

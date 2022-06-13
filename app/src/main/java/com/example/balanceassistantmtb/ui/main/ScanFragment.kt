@@ -74,13 +74,8 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
         val recyclerViewLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context)
         recyclerView?.layoutManager = recyclerViewLayoutManager
-        val recyclerViewAdapter: ScanAdapter? = context?.let {
-            ScanAdapter(
-                it, mScannedSensorList
-            )
-        }
         recyclerView?.itemAnimator = DefaultItemAnimator()
-        recyclerView?.adapter = recyclerViewAdapter
+        recyclerView?.adapter = mScanAdapter
 
         // Set the SensorClickInterface instance to main activity.
         if (activity != null) {
