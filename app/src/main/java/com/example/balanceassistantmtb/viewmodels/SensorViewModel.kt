@@ -223,12 +223,12 @@ class SensorViewModel: ViewModel(), XsensDotDeviceCallback {
      * @param xsDevice The XsensDotDevice object
      */
     private fun addDevice(xsDevice: XsensDotDevice) {
-        if (mSensorList.value == null) mSensorList.value = ArrayList()
+        if (mSensorList.value == null) mSensorList.value = ArrayList<XsensDotDevice>()
         val devices = mSensorList.value
         Log.d(tAG, "devices: $devices")
         var isExist = false
         for (_xsDevice in devices!!) {
-            if (xsDevice.address == _xsDevice.address) {
+            if (xsDevice.address.equals(_xsDevice.address)) {
                 isExist = true
                 break
             }

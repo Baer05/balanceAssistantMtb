@@ -9,13 +9,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.example.balanceassistantmtb.MainActivity
 import com.example.balanceassistantmtb.R
+import com.example.balanceassistantmtb.databinding.ActivityHomeBinding
 import com.example.balanceassistantmtb.interfaces.RecodingClickInterface
 import com.example.balanceassistantmtb.interfaces.ScanClickInterface
 import com.example.balanceassistantmtb.utlils.Utils
@@ -24,13 +24,13 @@ import com.example.balanceassistantmtb.viewmodels.SensorViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
-    private val tAG = MainActivity::class.java.simpleName
+    private val tAG = HomeActivity::class.java.simpleName
 
     private lateinit var homeFragment: HomeFragment
     private lateinit var scanFragment: ScanFragment
     private lateinit var dashboardFragment: DashboardFragment
-    private lateinit var bottomNavigation: BottomNavigationView
     private var fragmentPos = 0 //position of the fragment
+    private var mBinding: ActivityHomeBinding? = null   // The view binder of MainActivity
     private val requestEnableBLUETOOTH = 1001   // The code of request
     private val requestPermissionLOCATION = 1002    // The code of request
     private var mBluetoothViewModel: BluetoothViewModel? = null  // The Bluetooth view model instance
@@ -41,10 +41,10 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        mBinding = ActivityHomeBinding.inflate(LayoutInflater.from(this));
+        setContentView(mBinding!!.root)
         // Get the fragment to return to from extras 1:group, 2:feed, 0:profile
         val fragment = intent.extras?.get("fragment")
-        bottomNavigation = findViewById(R.id.btm_nav)
         bindViewModel()
         if(!checkBluetoothAndPermission()) {
             doToast("Failed to acquire permissions for scanning. App functionality not guaranteed!")
@@ -62,7 +62,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, scanFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                bottomNavigation.menu.findItem(R.id.scan).isChecked =true
+                mBinding?.btmNav?.menu?.findItem(R.id.scan)?.isChecked =true
             }
             "2" -> {
                 dashboardFragment = DashboardFragment()
@@ -72,7 +72,7 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, dashboardFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                bottomNavigation.menu.findItem(R.id.dashboard).isChecked =true
+                mBinding?.btmNav?.menu?.findItem(R.id.dashboard)?.isChecked =true
             }
             else -> {
                 homeFragment = HomeFragment()
@@ -82,11 +82,11 @@ class HomeActivity : AppCompatActivity() {
                     .replace(R.id.frame_layout, homeFragment)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit()
-                bottomNavigation.menu.findItem(R.id.home).isChecked = true
+                mBinding?.btmNav?.menu?.findItem(R.id.home)?.isChecked = true
             }
         }
 
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+        mBinding?.btmNav?.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
                     homeFragment =
@@ -161,7 +161,6 @@ class HomeActivity : AppCompatActivity() {
             Utils.requestEnableBluetooth(this, requestEnableBLUETOOTH)
         }
         val status = isBluetoothEnabled && isPermissionGranted
-        Log.i(tAG, "checkBluetoothAndPermission() - $status")
         mBluetoothViewModel?.updateBluetoothEnableState(status)
         return status
     }
@@ -189,7 +188,6 @@ class HomeActivity : AppCompatActivity() {
     fun setScanTriggerListener(listener: ScanClickInterface) {
         mScanListener = listener
     }
-
 
     /**
      * Set the trigger of streaming button.

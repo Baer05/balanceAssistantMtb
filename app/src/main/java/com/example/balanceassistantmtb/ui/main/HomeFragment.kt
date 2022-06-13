@@ -11,13 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -28,6 +25,7 @@ import com.example.balanceassistantmtb.adapters.DataAdapter
 import com.example.balanceassistantmtb.adapters.DataAdapter.Companion.keyADDRESS
 import com.example.balanceassistantmtb.adapters.DataAdapter.Companion.keyDATA
 import com.example.balanceassistantmtb.adapters.DataAdapter.Companion.keyTAG
+import com.example.balanceassistantmtb.databinding.FragmentHomeBinding
 import com.example.balanceassistantmtb.interfaces.DataChangeInterface
 import com.example.balanceassistantmtb.interfaces.RecodingClickInterface
 import com.example.balanceassistantmtb.service.AsyncstorageService
@@ -44,8 +42,9 @@ import java.lang.ref.WeakReference
 
 class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, RecodingClickInterface {
 
-    private val tAG: String = HomeFragment::class.java.name
+    private val tAG = HomeFragment::class.java.simpleName
     private lateinit var thisContext: Context
+    private var mBinding: FragmentHomeBinding? = null   // The view binder of ScanFragment
     private val isButtonStart = MutableLiveData<Boolean>(false)
     private var udpSocket: UdpClient? = null
     private val outerClass = WeakReference<HomeFragment>(this)
@@ -55,7 +54,6 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
     private var mDataAdapter: DataAdapter? = null   // The adapter for data item
     private val mDataList: ArrayList<HashMap<String, Any>> = ArrayList() // A list contains tag and data from each sensor
     private var mSyncingDialog: AlertDialog? = null     // A dialog during the synchronization
-    private var recyclerView: RecyclerView? = null
     private var mWakeLock: WakeLock? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -64,36 +62,33 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
             thisContext = container.context
         }
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-        val actionBar = view.findViewById<Toolbar>(R.id.toolbar)
-        actionBar.title = R.string.title_home.toString()
-        (requireActivity() as AppCompatActivity).setSupportActionBar(actionBar)
+        mBinding = FragmentHomeBinding.inflate(LayoutInflater.from(context));
+        mBinding!!.toolbar.title = getString(R.string.title_home)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding?.toolbar)
 
         udpSocket = UdpClient(handler)
 
-        val button = view.findViewById<Button>(R.id.tracking_btn)
-        button.setOnClickListener {
+        mBinding?.trackingBtn?.setOnClickListener {
             isButtonStart.value = !isButtonStart.value!!
             buttonAction()
         }
 
         isButtonStart.observe(viewLifecycleOwner) {
             if (isButtonStart.value == false) {
-                button.text =  getString(R.string.start_tracking)
+                mBinding?.trackingBtn?.text =  getString(R.string.start_tracking)
             } else {
-                button.text =  getString(R.string.end_tracking)
+                mBinding?.trackingBtn?.text =  getString(R.string.end_tracking)
             }
         }
 
         mSensorViewModel?.setStates(PLOT_STATE_ON, LOG_STATE_ON);
         mDataAdapter = DataAdapter(context!!, mDataList)
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.data_recycler_view)
         val recyclerViewLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context)
-        recyclerView?.layoutManager = recyclerViewLayoutManager
-        recyclerView?.itemAnimator = DefaultItemAnimator()
-        recyclerView?.adapter = mDataAdapter
+        mBinding?.dataRecyclerView?.layoutManager = recyclerViewLayoutManager
+        mBinding?.dataRecyclerView?.itemAnimator = DefaultItemAnimator()
+        mBinding?.dataRecyclerView?.adapter = mDataAdapter
 
         val syncingDialogBuilder = AlertDialog.Builder(
             activity!!
@@ -114,7 +109,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
         mWakeLock =
             powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "XSensLSLStreamer::Streaming")
 
-        return view
+        return mBinding?.root
     }
 
     override fun onAttach(context: Context) {
@@ -192,7 +187,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                     if (mSyncingDialog?.isShowing == true) mSyncingDialog!!.dismiss()
                     mSensorViewModel!!.setRootDevice(false)
                     if (isSuccess) {
-                        view?.findViewById<TextView>(R.id.sync_result)?.text =
+                        mBinding?.syncResult?.text =
                             (R.string.sync_result_success.toString())
                         // Syncing precess is success, choose one measurement mode to start measuring.
                         mSensorViewModel!!.setMeasurementMode(PAYLOAD_TYPE_COMPLETE_QUATERNION)
@@ -212,7 +207,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
                             if (mWakeLock?.isHeld == true) mWakeLock?.release()
                         }
                     } else {
-                        view?.findViewById<TextView>(R.id.sync_result)?.text =
+                        mBinding?.syncResult?.text =
                             (R.string.sync_result_fail).toString()
 
                         // If the syncing result is fail, show a message to user
@@ -289,7 +284,7 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
      * Reset page UI to default.
      */
     private fun resetPage() {
-        view?.findViewById<TextView>(R.id.sync_result)?.text = ("-")
+        mBinding?.syncResult?.text = ("-")
         mDataList.clear()
         mDataAdapter!!.notifyDataSetChanged()
         if (mWakeLock!!.isHeld) mWakeLock!!.release()
@@ -323,5 +318,15 @@ class HomeFragment : Fragment(), DataChangeInterface, XsensDotSyncCallback, Reco
             if (!mSyncingDialog!!.isShowing) mSyncingDialog!!.show()
         }
     }
+
+    override fun onDetach() {
+        super.onDetach()
+        // Stop measurement for each sensor when exiting this page.
+        mSensorViewModel!!.setMeasurement(false)
+        // It's necessary to update this status, because user may enter this page again.
+        mSensorViewModel!!.updateRecordingStatus(false)
+        if (mWakeLock!!.isHeld) mWakeLock!!.release()
+    }
+
 }
 

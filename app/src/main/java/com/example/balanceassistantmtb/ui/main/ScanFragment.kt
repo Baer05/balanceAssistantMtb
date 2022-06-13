@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +21,7 @@ import com.example.balanceassistantmtb.adapters.ScanAdapter.Companion.keyBattery
 import com.example.balanceassistantmtb.adapters.ScanAdapter.Companion.keyConnectionSTATE
 import com.example.balanceassistantmtb.adapters.ScanAdapter.Companion.keyDEVICE
 import com.example.balanceassistantmtb.adapters.ScanAdapter.Companion.keyTAG
+import com.example.balanceassistantmtb.databinding.FragmentScanBinding
 import com.example.balanceassistantmtb.interfaces.BatteryChangedInterface
 import com.example.balanceassistantmtb.interfaces.ScanClickInterface
 import com.example.balanceassistantmtb.interfaces.SensorClickInterface
@@ -37,6 +37,7 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
 
     private val tAG = ScanFragment::class.java.simpleName
     private lateinit var thisContext: Context
+    private var mBinding: FragmentScanBinding? = null   // The view binder of ScanFragment
     private var mXsDotScanner: XsensDotScanner? = null   // The XsensDotScanner object
     private val mScannedSensorList: ArrayList<HashMap<String, Any>> = ArrayList()   // A list contains scanned Bluetooth device
     private var mBluetoothViewModel: BluetoothViewModel? = null  // The Bluetooth view model instance
@@ -44,7 +45,6 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
     private var mScanAdapter: ScanAdapter? = null    // The adapter for scanned device item
     private var mIsScanning = false     // A variable for scanning flag
     private var mConnectionDialog: AlertDialog? = null   // A dialog during the connection
-    private var recyclerView: RecyclerView? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -57,24 +57,22 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
             thisContext = container.context
         }
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_scan, container, false)
-        val actionBar = view.findViewById<Toolbar>(R.id.toolbar)
-        actionBar.title = getString(R.string.title_scan)
-        (requireActivity() as AppCompatActivity).setSupportActionBar(actionBar)
+        mBinding = FragmentScanBinding.inflate(LayoutInflater.from(context))
+        mBinding!!.toolbar.title = getString(R.string.title_scan)
+        (requireActivity() as AppCompatActivity).setSupportActionBar(mBinding!!.toolbar)
 
         mScanAdapter = context?.let { ScanAdapter(it, mScannedSensorList) }
         mScanAdapter!!.setSensorClickListener(this)
 
-        val button = view.findViewById<ExtendedFloatingActionButton>(R.id.fab)
-        button.shrink()
-        button.setOnClickListener { onScanTriggered(!mIsScanning) }
+        mBinding?.fab?.shrink()
+        mBinding!!.fab.setOnClickListener { onScanTriggered(!mIsScanning) }
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.sensor_recycler_view)
+
         val recyclerViewLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context)
-        recyclerView?.layoutManager = recyclerViewLayoutManager
-        recyclerView?.itemAnimator = DefaultItemAnimator()
-        recyclerView?.adapter = mScanAdapter
+        mBinding?.sensorRecyclerView?.layoutManager = recyclerViewLayoutManager
+        mBinding?.sensorRecyclerView?.itemAnimator = DefaultItemAnimator()
+        mBinding?.sensorRecyclerView?.adapter = mScanAdapter
 
         // Set the SensorClickInterface instance to main activity.
         if (activity != null) {
@@ -88,7 +86,7 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
         connectionDialogBuilder.setMessage(getString(R.string.hint_connecting))
         mConnectionDialog = connectionDialogBuilder.create()
 
-        return view
+        return mBinding?.root
     }
 
     override fun onScanTriggered(started: Boolean) {
@@ -111,22 +109,20 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
 
 
     private fun updateFABState() {
-        if (mIsScanning) view?.findViewById<ExtendedFloatingActionButton>(R.id.fab)?.extend()
-        else view?.findViewById<ExtendedFloatingActionButton>(R.id.fab)?.shrink()
+        if(mIsScanning)
+            mBinding?.fab?.extend();
+        else
+            mBinding?.fab?.shrink();
+
     }
 
     override fun onXsensDotScanned(p0: BluetoothDevice?, p1: Int) {
-        recyclerView?.removeAllViews()
         if (p0 != null) {
-            Log.i(
-                tAG,
-                "onXsensDotScanned(0) - Name: " + p0.name + ", Address: " + p0.address
-            )
             if (isAdded) {
                 // Use the mac address as UID to filter the same scan result.
                 var isExist = false
                 for (map in mScannedSensorList) {
-                    if ((map[keyDEVICE] as BluetoothDevice).address == p0.address) isExist =
+                    if ((map[keyDEVICE] as BluetoothDevice).address.equals(p0.address)) isExist =
                         true
                 }
                 if (!isExist) {
@@ -218,10 +214,11 @@ class ScanFragment : Fragment(), XsensDotScannerCallback, SensorClickInterface, 
                     val state = t.connectionState
                     for (map in mScannedSensorList) {
                         val device = map[keyDEVICE] as BluetoothDevice?
+                        Log.d(tAG, "device, $device")
                         if (device != null) {
-                            val deviceAddress = t.address
+                            val deviceAddress = device.address
                             // Update connection state by the same mac address.
-                            if (deviceAddress == address) {
+                            if (deviceAddress.equals(address)) {
                                 map[keyConnectionSTATE] = state
                                 mScanAdapter!!.notifyDataSetChanged()
                             }
